@@ -33,13 +33,18 @@ typedef union {
 } String;
 
 String str_new(size_t size) {
+  String str;
   if (size > SLEN) {
     char *data = (char *)calloc(size, sizeof(char));
-    return (String){
+    str = (String){
         .big_string = {.cap = BIG_MASK | size + 1, .len = 0, .data = data}};
+  str.mode = IS_BIG;
+  return str;
   }
-  return (String){
+  str = (String){
       .small_string = {.cap = SCAP, .data = {0}, .remaining = SLEN}};
+  str.mode = IS_SMALL;
+  return str;
 }
 
 void str_del(String str) {
@@ -69,4 +74,9 @@ String str_from(const char *chars) {
   return str;
 }
 
-int main() {}
+int main() {
+  String x= str_from("Hellop");
+  String y = str_from("That's a very long sentence sorry :c");
+  puts(cstring(x));
+  puts(cstring(y));
+}
