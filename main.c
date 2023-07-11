@@ -60,18 +60,27 @@ size_t get_len(String str) {
   return SLEN - str.small_string.remaining;
 }
 
+String set_len(String str, size_t len) {
+  if (str.mode == IS_BIG) {
+    str.big_string.len = len;
+  } else {
+    str.small_string.remaining = SLEN - len;
+  }
+  return str;
+}
+
 size_t get_cap(String str) {
   if (str.mode == IS_BIG) {
     return str.big_string.cap & BIG_MASK;
   }
-  return SLEN - str.small_string.remaining;
+  return SCAP;
 }
 
 String str_from(const char *chars) {
   size_t len = strlen(chars);
   String str = str_new(len);
   memcpy(cstring(str), chars, len);
-  return str;
+  return set_len(str, len);
 }
 
 int main() {
